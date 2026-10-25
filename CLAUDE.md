@@ -4,12 +4,11 @@ Static single-page quiz site. Countdown to 31.10.2026, then a sequence of questi
 
 ## Files
 
-- `index.html` — all markup, CSS and logic (inline `<style>` and `<script>`).
-- `questions.js` — quiz content and config, exposed as `window.QUIZ`. Edit this to change questions.
+- `index.html` — all markup, CSS, logic and quiz content (inline `<style>` and `<script>`; quiz data is the `window.QUIZ` block in the first script).
 
 Open `index.html` directly in a browser. Fonts load from Google Fonts (needs internet).
 
-## Config (`questions.js`)
+## Config (`window.QUIZ` in `index.html`)
 
 - `targetDate` — countdown target, local time. Currently `new Date(2026, 9, 31, 0, 0, 0)` (months are 0-indexed).
 - `finalMessage` — shown after the last question ("Hotovo ♥", placeholder text).
@@ -38,5 +37,5 @@ Working version, not yet verified in a browser by Claude (no automated tests). P
 ## Possible next steps
 
 - Replace the placeholder `finalMessage`.
-- Add more questions in `questions.js`.
+- Add more questions in the `window.QUIZ` block of `index.html`.
 - Deploy somewhere static (GitHub Pages, Netlify) if it should be reachable by someone else.
