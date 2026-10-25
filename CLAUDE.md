@@ -24,7 +24,7 @@ Current questions:
 - **Views:** `countdown`, `quiz`, `end`. Switching fades the old view out (700 ms, `FADE` in JS and `--fade` in CSS must match), then fades the new one in.
 - **Answer matching:** `normalize()` lowercases, strips diacritics (NFD), removes non-alphanumerics, collapses whitespace. Both input and each accepted answer are normalized, so `š` = `s`. Exact match after normalization; empty input never matches.
 - **Wrong answer:** input gets the `.shake` class and its text is selected. **Correct:** fade to next question; after the last, show `finalMessage`.
-- **Debug switch:** checkbox bottom-right, or `?debug` in the URL. Persisted in `localStorage` key `debug`. Skips the countdown (also live while the countdown runs).
+- **Debug switch:** removed from `main`; lives on the `test` branch only.
 - **Progress persistence:** `localStorage` key `quizIndex` holds the number of answered questions. On load, if > 0 the countdown is skipped and the quiz resumes there; if all answered, the end screen shows. `?reset` clears progress. All storage access is wrapped in try/catch, so it degrades to no persistence (private mode).
 
 ## Styling

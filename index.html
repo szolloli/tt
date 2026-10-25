@@ -92,15 +92,6 @@
     40%, 60% { transform: translateX(9px); }
   }
 
-  .debug {
-    position: fixed; right: 14px; bottom: 12px;
-    font: 400 11px var(--font-ui);
-    letter-spacing: .15em; text-transform: uppercase;
-    color: var(--muted);
-    display: flex; align-items: center; gap: 8px;
-    cursor: pointer; user-select: none;
-  }
-  .debug input { width: auto; margin: 0; }
 </style>
 </head>
 <body>
@@ -125,7 +116,6 @@
     </section>
   </main>
 
-  <label class="debug"><input type="checkbox" id="debug"> debug</label>
 
   <script src="questions.js"></script>
   <script>
@@ -154,25 +144,13 @@
       current.classList.add("visible");
     }
 
-    // ---- debug switch (checkbox, persisted; ?debug in URL also enables)
-    const dbg = $("debug");
-    const store = {
-      get: () => { try { return localStorage.getItem("debug") === "1"; } catch { return false; } },
-      set: (v) => { try { localStorage.setItem("debug", v ? "1" : "0"); } catch {} },
-    };
-    dbg.checked = store.get() || new URLSearchParams(location.search).has("debug");
-    dbg.addEventListener("change", () => {
-      store.set(dbg.checked);
-      if (dbg.checked && phase === "countdown") startQuiz();
-    });
-
     // ---- countdown
     let phase = "countdown";
     const pad = (n) => String(n).padStart(2, "0");
     function tick() {
       if (phase !== "countdown") return;
       const left = targetDate - Date.now();
-      if (left <= 0 || dbg.checked) return startQuiz();
+      if (left <= 0) return startQuiz();
       const t = Math.floor(left / 1000);
       $("d").textContent = pad(Math.floor(t / 86400));
       $("h").textContent = pad(Math.floor(t / 3600) % 24);
