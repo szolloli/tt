@@ -12,7 +12,7 @@ Open `index.html` directly in a browser. Fonts load from Google Fonts (needs int
 ## Config (`questions.js`)
 
 - `targetDate` — countdown target, local time. Currently `new Date(2026, 9, 31, 0, 0, 0)` (months are 0-indexed).
-- `finalMessage` — shown after the last question ("Hotovo ♥", placeholder text).
+- `finalMessage` — shown after the last question ("Hotovo", placeholder text).
 - `questions` — array of `{ text, answers: [...] }`. `___` in `text` renders as a blank.
 
 Current questions:

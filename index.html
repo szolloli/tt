@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tamarka</title>
+<link rel="icon" type="image/png" href="img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
@@ -170,15 +171,6 @@
     cursor: pointer;
     transition: background .15s, color .15s;
   }
-  .choices .opt[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
-  .choices .confirm {
-    margin-top: 10px;
-    background: none; border: 0; border-bottom: 1px solid var(--ink);
-    padding: 4px 0;
-    font: 400 14px var(--font-ui);
-    letter-spacing: .2em; text-transform: uppercase;
-    color: var(--ink); cursor: pointer;
-  }
   .choices .picklabel {
     font: 400 12px var(--font-ui);
     letter-spacing: .2em; text-transform: uppercase;
@@ -320,30 +312,19 @@
       choices.replaceChildren();
       const label = document.createElement("div");
       label.className = "picklabel";
-      label.textContent = "vyber všetky správne";
+      label.textContent = "vyber jednu";
       choices.append(label);
       q.options.forEach((o) => {
         const b = document.createElement("button");
         b.type = "button";
         b.className = "opt";
         b.textContent = o.text;
-        b.setAttribute("aria-pressed", "false");
         b.addEventListener("click", () => {
-          b.setAttribute("aria-pressed", String(b.getAttribute("aria-pressed") !== "true"));
+          if (busy) return;
+          submit(Boolean(o.correct), choices);
         });
         choices.append(b);
       });
-      const ok = document.createElement("button");
-      ok.type = "button";
-      ok.className = "confirm";
-      ok.textContent = "potvrdiť";
-      ok.addEventListener("click", () => {
-        if (busy) return;
-        const picked = [...choices.querySelectorAll(".opt")]
-          .map((b) => b.getAttribute("aria-pressed") === "true");
-        submit(q.options.every((o, i) => picked[i] === Boolean(o.correct)), choices);
-      });
-      choices.append(ok);
     }
 
     function renderQuestion() {
