@@ -27,6 +27,12 @@ window.QUIZ = {
   // Countdown target (local time): 31.10.2026 00:00
   targetDate: new Date(2026, 9, 31, 0, 0, 0),
   finalMessage: "Hotovo",
+  // Page shown after the countdown, before the first question
+  intro: {
+    title: "O Tamarke, pre Tamarku",
+    text: "Niekoľko otázok o tebe. Na konci ťa čaká malá odmena.",
+    button: "Začať",
+  },
   questions: [
     {
       text: "Tamarka píše Oliverovi, Dianka píše ___",
