@@ -30,7 +30,7 @@ window.QUIZ = {
   // Page shown after the countdown, before the first question
   intro: {
     title: "O Tamarke, pre Tamarku",
-    text: "Niekoľko otázok o tebe. Na konci ťa čaká malá odmena.",
+    text: "Niekoľko otázok zo života Tamarky.",
     button: "Začať",
   },
   questions: [
