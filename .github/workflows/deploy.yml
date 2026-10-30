@@ -1,5 +1,8 @@
 name: Deploy to GitHub Pages
 
+# main is served at the site root, test at /test/. Runs from main only: the
+# github-pages environment rejects deploys triggered from other branches.
+# After pushing to test, run this workflow manually (workflow_dispatch) on main.
 on:
   push:
     branches: [main]
@@ -22,10 +25,24 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: src-main
+      - uses: actions/checkout@v4
+        with:
+          ref: test
+          path: src-test
       - name: Stage site files
         run: |
-          mkdir _site
-          cp index.html _site/
+          stage() {
+            mkdir -p "$2"
+            for f in index.html questions.js img; do
+              [ -e "$1/$f" ] && cp -r "$1/$f" "$2/"
+            done
+            return 0
+          }
+          stage src-main _site
+          stage src-test _site/test
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
