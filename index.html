@@ -84,6 +84,16 @@
     text-transform: uppercase;
     color: var(--muted);
   }
+  .intro-title { font-weight: 500; font-size: clamp(30px, 6vw, 56px); line-height: 1.2; margin: 0 0 24px; }
+  .intro-text { font: 400 clamp(16px, 2.4vw, 20px) var(--font-ui); line-height: 1.6; color: var(--muted); margin: 0 auto; max-width: 30em; }
+  .intro-btn {
+    margin-top: 36px;
+    background: none; border: 0; border-bottom: 1px solid var(--ink);
+    padding: 4px 0;
+    font: 400 14px var(--font-ui);
+    letter-spacing: .2em; text-transform: uppercase;
+    color: var(--ink); cursor: pointer;
+  }
   .final { font-size: clamp(36px, 8vw, 80px); font-weight: 300; }
 
   .end-link {
@@ -209,6 +219,12 @@
       </div>
     </section>
 
+    <section id="intro" class="view">
+      <h1 class="intro-title" id="introTitle"></h1>
+      <p class="intro-text" id="introText"></p>
+      <button type="button" class="intro-btn" id="introBtn"></button>
+    </section>
+
     <section id="quiz" class="view">
       <div class="draft" id="draft" hidden></div>
       <p class="question" id="question"></p>
@@ -240,10 +256,10 @@
   <script src="questions.js"></script>
   <script>
   (() => {
-    const { targetDate, questions, finalMessage } = window.QUIZ;
+    const { targetDate, questions, finalMessage, intro } = window.QUIZ;
     const FADE = 700;
     const $ = (id) => document.getElementById(id);
-    const views = { countdown: $("countdown"), quiz: $("quiz"), end: $("end") };
+    const views = { countdown: $("countdown"), intro: $("intro"), quiz: $("quiz"), end: $("end") };
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
     const normalize = (s) =>
@@ -405,10 +421,27 @@
         await show("end");
         return;
       }
+      if (index === 0) {
+        phase = "intro";
+        await show("intro");
+        return;
+      }
+      await beginQuestions();
+    }
+
+    async function beginQuestions() {
+      phase = "quiz";
       renderQuestion();
       await show("quiz");
       focusAnswer();
     }
+
+    $("introTitle").textContent = intro.title;
+    $("introText").textContent = intro.text;
+    $("introBtn").textContent = intro.button;
+    $("introBtn").addEventListener("click", () => {
+      if (phase === "intro") beginQuestions();
+    });
 
     async function next() {
       busy = true;
