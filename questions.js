@@ -6,8 +6,6 @@
 //   text    - question text
 //   image   - optional screenshot path, shown between text and answer
 //   blur    - optional { x, y, w, h } in % of the image; blurred until answered
-//   draft   - true = unfinished; "DRAFT" badge shows when debug is on
-//   draftNote - optional hint what needs work (shown in the badge)
 //
 // Two types:
 //   text (default): answers: ["...", ...]  any one of them is accepted
@@ -48,24 +46,19 @@ window.QUIZ = {
       answers: [String(birthGapDays)],
     },
 
-    // ---- DRAFTS from screenshots of 26.10.2026 (img/q01..q15), all need work ----
     {
-      draft: true,
       text: "Komu už Tamarka neposlala ďalšie nudes?",
       image: "img/q04.png",
       blur: { x: 52, y: 60, w: 16, h: 27 },
       answers: ["Borisovi", "Boris", "Borisa"],
     },
     {
-      draft: true,
       text: "Čo si Tamarka priala na svoje 17. narodeniny?",
       image: "img/q06.png",
       blur: { x: 83, y: 25, w: 12, h: 40 },
       answers: ["teba", "Olivera", "Oliver", "ťa"],
     },
     {
-      draft: true,
-      draftNote: "choice, 3 options, 1 correct",
       type: "choice",
       text: "Čo mal Oliver naučiť Tamarku?",
       image: "img/q08.png",
@@ -77,8 +70,6 @@ window.QUIZ = {
       ],
     },
     {
-      draft: true,
-      draftNote: "choice, 3 options, 1 correct",
       type: "choice",
       text: "Na čo sa spýtal Peter Šimek?",
       image: "img/q09.png",
@@ -90,15 +81,12 @@ window.QUIZ = {
       ],
     },
     {
-      draft: true,
       text: "Bez čoho šla Tamarka za namom? ___",
       image: "img/q12.png",
       blur: { x: 48, y: 20, w: 15.5, h: 60 },
       answers: ["podprsenky", "podprsenka", "podprsenku"],
     },
     {
-      draft: true,
-      draftNote: "choice, 3 options, 1 correct",
       type: "choice",
       text: "Čo mal Oliver doniesť Tamarke od Andreja?",
       image: "img/q14.png",
