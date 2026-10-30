@@ -4,14 +4,15 @@ Static single-page quiz site. Countdown to 31.10.2026, then a sequence of questi
 
 ## Files
 
-- `index.html` — all markup, CSS, logic and quiz content (inline `<style>` and `<script>`; quiz data is the `window.QUIZ` block in the first script).
+- `index.html` — all markup, CSS and logic (inline `<style>` and `<script>`).
+- `questions.js` — quiz content and config, exposed as `window.QUIZ`. Edit this to change questions.
 
 Open `index.html` directly in a browser. Fonts load from Google Fonts (needs internet).
 
-## Config (`window.QUIZ` in `index.html`)
+## Config (`questions.js`)
 
 - `targetDate` — countdown target, local time. Currently `new Date(2026, 9, 31, 0, 0, 0)` (months are 0-indexed).
-- `finalMessage` — shown after the last question ("Hotovo ♥", placeholder text).
+- `finalMessage` — shown after the last question ("Hotovo", placeholder text).
 - `questions` — array of `{ text, answers: [...] }`. `___` in `text` renders as a blank.
 
 Current questions:
@@ -23,7 +24,7 @@ Current questions:
 - **Views:** `countdown`, `quiz`, `end`. Switching fades the old view out (700 ms, `FADE` in JS and `--fade` in CSS must match), then fades the new one in.
 - **Answer matching:** `normalize()` lowercases, strips diacritics (NFD), removes non-alphanumerics, collapses whitespace. Both input and each accepted answer are normalized, so `š` = `s`. Exact match after normalization; empty input never matches.
 - **Wrong answer:** input gets the `.shake` class and its text is selected. **Correct:** fade to next question; after the last, show `finalMessage`.
-- **Debug switch:** removed from `main`; lives on the `test` branch only.
+- **No debug switch on `main`:** the countdown always runs until `targetDate`; the `test` branch (served at `/test/`) keeps the debug UI and uses `test:`-prefixed localStorage keys.
 - **Progress persistence:** `localStorage` key `quizIndex` holds the number of answered questions. On load, if > 0 the countdown is skipped and the quiz resumes there; if all answered, the end screen shows. `?reset` clears progress. All storage access is wrapped in try/catch, so it degrades to no persistence (private mode).
 
 ## Styling
@@ -37,5 +38,5 @@ Working version, not yet verified in a browser by Claude (no automated tests). P
 ## Possible next steps
 
 - Replace the placeholder `finalMessage`.
-- Add more questions in the `window.QUIZ` block of `index.html`.
+- Add more questions in `questions.js`.
 - Deploy somewhere static (GitHub Pages, Netlify) if it should be reachable by someone else.

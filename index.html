@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tamarka</title>
+<link rel="icon" type="image/png" href="img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
@@ -28,6 +29,7 @@
     text-align: center;
     padding: 0 16px;
   }
+  body { height: auto; min-height: 100%; padding: 24px 16px; }
   .stage { width: 100%; max-width: 820px; }
   .view {
     opacity: 0;
@@ -84,6 +86,35 @@
   }
   .final { font-size: clamp(36px, 8vw, 80px); font-weight: 300; }
 
+  .end-link {
+    display: inline-block;
+    margin-top: 32px;
+    font: 400 14px var(--font-ui);
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--ink);
+    border-bottom: 1px solid var(--ink);
+    text-decoration: none;
+    padding-bottom: 4px;
+  }
+
+  .end-code {
+    margin-top: 28px;
+    font: 400 12px var(--font-ui);
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .end-code code {
+    display: block;
+    margin-top: 8px;
+    font: 500 20px var(--font-ui);
+    letter-spacing: .08em;
+    text-transform: none;
+    color: var(--ink);
+    user-select: all;
+  }
+
   .shake { animation: shake 450ms cubic-bezier(.36,.07,.19,.97); }
   @keyframes shake {
     10%, 90% { transform: translateX(-2px); }
@@ -91,6 +122,52 @@
     30%, 50%, 70% { transform: translateX(-9px); }
     40%, 60% { transform: translateX(9px); }
   }
+
+  .shot-wrap {
+    position: relative;
+    width: fit-content;
+    max-width: 100%;
+    margin: -16px auto 32px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 14px rgba(0,0,0,.12);
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+  .shot-wrap[hidden] { display: none; }
+  .shot {
+    display: block;
+    pointer-events: none;
+    -webkit-user-drag: none;
+    max-width: 100%;
+    max-height: 38vh;
+  }
+  .shot-blur {
+    position: absolute;
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    opacity: 1;
+    transition: opacity 500ms ease;
+  }
+  .shot-blur.off { opacity: 0; }
+  .choices { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .choices .opt {
+    width: min(100%, 420px);
+    padding: 12px 16px;
+    background: transparent;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    font: 400 20px var(--font-ui);
+    cursor: pointer;
+    transition: background .15s, color .15s;
+  }
+  .choices .picklabel {
+    font: 400 12px var(--font-ui);
+    letter-spacing: .2em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  [hidden] { display: none !important; }
 
 </style>
 </head>
@@ -107,36 +184,23 @@
 
     <section id="quiz" class="view">
       <p class="question" id="question"></p>
+      <div class="shot-wrap" id="shotWrap" hidden>
+        <img class="shot" id="shot" alt="">
+        <div class="shot-blur" id="shotBlur" hidden></div>
+      </div>
       <input id="answer" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="odpoveď">
-      <div class="hint">enter</div>
+      <div class="hint" id="hint">enter</div>
+      <div class="choices" id="choices" hidden></div>
     </section>
 
     <section id="end" class="view">
       <div class="final" id="final"></div>
+      <a class="end-link" href="https://www.saal-digital.eu/WebshopClient/#/Designer/8dd8c88ed5edf3a98e28273c819c2cd9/4140882957d545b08200a69641c8eb499dc45fcf23354176b7affce2a08350ff/0/cs/" target="_blank" rel="noopener">Otvoriť</a>
+      <div class="end-code">Zľavový kód<code>DQYXD8nhUc-PFL</code></div>
     </section>
   </main>
 
-
-  <script>
-    // Edit this file to change the quiz.
-    // Each answer is matched ignoring case, diacritics (š = s) and punctuation.
-    // Use "___" in a question to render a blank.
-    window.QUIZ = {
-      // Countdown target (local time): 31.10.2026 00:00
-      targetDate: new Date(2026, 9, 31, 0, 0, 0),
-      finalMessage: "Hotovo ♥",
-      questions: [
-        {
-          text: "Tamarka píše Oliverovi, Dianka píše ___",
-          answers: ["Rigi", "Rigimu", "Jakub Rigoci"],
-        },
-        {
-          text: "Po kolkatich mesiacoch napisala Tamarka Oliverovi, že keby začali spolu skoršie spávať už by mohli mať dieťa.",
-          answers: ["šesťnásť", "šestnastich", "16"],
-        },
-      ],
-    };
-  </script>
+  <script src="questions.js"></script>
   <script>
   (() => {
     const { targetDate, questions, finalMessage } = window.QUIZ;
@@ -188,12 +252,55 @@
     let busy = false;
     const input = $("answer");
 
+    const shot = $("shot");
+    for (const type of ["contextmenu", "dragstart", "selectstart"]) {
+      $("shotWrap").addEventListener(type, (e) => e.preventDefault());
+    }
+    const choices = $("choices");
+
+    function renderChoices(q) {
+      choices.replaceChildren();
+      const label = document.createElement("div");
+      label.className = "picklabel";
+      label.textContent = "vyber jednu";
+      choices.append(label);
+      q.options.forEach((o) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "opt";
+        b.textContent = o.text;
+        b.addEventListener("click", () => {
+          if (busy) return;
+          submit(Boolean(o.correct), choices);
+        });
+        choices.append(b);
+      });
+    }
+
     function renderQuestion() {
-      const html = questions[index].text
+      const q = questions[index];
+      const isChoice = q.type === "choice";
+      $("question").innerHTML = q.text
         .replace(/&/g, "&amp;").replace(/</g, "&lt;")
         .replace(/___+/g, '<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
-      $("question").innerHTML = html;
-      input.value = "";
+      $("shotWrap").hidden = !q.image;
+      if (q.image) shot.src = q.image;
+      const blur = $("shotBlur");
+      blur.classList.remove("off");
+      blur.hidden = !q.blur;
+      if (q.blur) {
+        const { x, y, w, h } = q.blur;
+        Object.assign(blur.style, { left: x + "%", top: y + "%", width: w + "%", height: h + "%" });
+      }
+      input.hidden = isChoice;
+      $("hint").hidden = isChoice;
+      choices.hidden = !isChoice;
+      if (isChoice) renderChoices(q);
+      else input.value = "";
+    }
+
+    function focusAnswer() {
+      if (!input.hidden) input.focus();
     }
 
     async function startQuiz() {
@@ -206,11 +313,15 @@
       }
       renderQuestion();
       await show("quiz");
-      input.focus();
+      focusAnswer();
     }
 
     async function next() {
       busy = true;
+      if (questions[index].blur) {
+        $("shotBlur").classList.add("off");
+        await sleep(700);
+      }
       index += 1;
       progress.set(index);
       if (index >= questions.length) {
@@ -222,24 +333,32 @@
       await sleep(FADE);
       renderQuestion();
       current.classList.add("visible");
-      input.focus();
+      focusAnswer();
       busy = false;
     }
 
     function isCorrect(value) {
       const v = normalize(value);
-      return v !== "" && questions[index].answers.some((a) => normalize(a) === v);
+      const { answers } = questions[index];
+      const accepted = typeof answers === "function" ? answers() : answers;
+      return v !== "" && accepted.some((a) => normalize(a) === v);
+    }
+
+    // Correct => next question; wrong => shake the answer element.
+    function submit(ok, el) {
+      if (ok) return next();
+      el.classList.remove("shake");
+      void el.offsetWidth;
+      el.classList.add("shake");
+      if (el === input) input.select();
     }
 
     input.addEventListener("keydown", (e) => {
       if (e.key !== "Enter" || busy) return;
-      if (isCorrect(input.value)) return next();
-      input.classList.remove("shake");
-      void input.offsetWidth;
-      input.classList.add("shake");
-      input.select();
+      submit(isCorrect(input.value), input);
     });
     input.addEventListener("animationend", () => input.classList.remove("shake"));
+    choices.addEventListener("animationend", () => choices.classList.remove("shake"));
 
     // Already answered something => countdown was passed before, skip it.
     if (index > 0) startQuiz();
