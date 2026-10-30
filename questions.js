@@ -44,12 +44,6 @@ window.QUIZ = {
     // ---- DRAFTS from screenshots of 26.10.2026 (img/q01..q15), all need work ----
     {
       draft: true,
-      text: "Tak mi budú chýbať tvoje fotky v ___",
-      image: "img/q01.png",
-      answers: ["ročenkách", "rocenkach", "ročenka", "ročenke"],
-    },
-    {
-      draft: true,
       draftNote: "choice, 4 options, 1 correct",
       type: "choice",
       text: "Čo by Tamarka radšej?",
@@ -101,20 +95,6 @@ window.QUIZ = {
       text: "Na koho sa Petr spýtal, či je to Tamarkin priateľ?",
       image: "img/q09.png",
       answers: ["rigi", "Rigimu"],
-    },
-    {
-      draft: true,
-      draftNote: "choice, 5 options, 2 correct. Same screenshot as q09/q11",
-      type: "choice",
-      text: "Čo Tamarka povedala Petrovi?",
-      image: "img/q10.png",
-      options: [
-        { text: "Že má priateľa", correct: true },
-        { text: "Že sa priateľ pozná s jeho bratom", correct: true },
-        { text: "Že je to Rigi" },
-        { text: "Že za ním ide" },
-        { text: "Že sa s ním chce stretnúť" },
-      ],
     },
     {
       draft: true,
